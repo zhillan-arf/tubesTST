@@ -7,6 +7,7 @@ from flask import Flask, request, redirect, url_for, jsonify, Response, send_fil
 from pandas.io.json import json_normalize
 from urllib.parse import quote, unquote
 from functools import wraps
+import matplotlib.pyplot as plt
 import pandas as pd
 import requests
 import jwt
@@ -93,7 +94,7 @@ def signup():
     return jsonify("You have successfully signed up."), 200
 
 
-# (2/3) CORE API
+# (2/3) CORE 
 # PROVIDE | Parse received JSON, join
 @app.route("/getmap", methods=["GET", "POST"])
 @needs_token
@@ -124,13 +125,14 @@ def getmap():
 @needs_token
 def vizstats():
     # Login to zhaf's server w/ hard-coded creds
-    path_zhaf = ""
-    endpoint = "/loginapi"
+    path_zhaf = "http://103.13.207.181:5000"
+    endpoint = "/loginapi/"
     email = "muhammad.zhafran.haris@gmail.com"
     password = "2345"
     url_request_token = path_zhaf + endpoint + "?email=" + email + "&password=" + password
-    rtoken = requests.get(url_request_token)
-    token = (rtoken.json())["token"]
+    rtoken = requests.post(url_request_token)
+    json_rtoken = rtoken.json()
+    token = json_rtoken["Token"]
     
     # Get statistic from zhaf's server
     startdate = request.args.get("startdate")
@@ -138,23 +140,22 @@ def vizstats():
     endpoint = "/report"
     url_request_stats = path_zhaf + endpoint + "?token=" + token + "&startdate=" + startdate + "&enddate=" + enddate
     rstats = requests.get(url_request_stats)
-    rdata = rstats.json()
-    stats = rdata["statistic"]
+    rjson = rstats.json()
 
-    # Get daily statistics
+    # Get statistics
     df_daily = pd.DataFrame(columns=["date", "total accidents", "avg severity", "weight"])
-    for key, value in stats.items():
+    for item in rjson:
         df_daily = df_daily.append(
             {
-                "date" : key, 
-                "total accidents" : value["total accidents"], 
-                "avg severity" : value["avg severity"],
-                "weight" : value["total accidents"] * value["avg severity"]
+                "date" : item,
+                "total accidents" : rjson[item]["total accidents"], 
+                "avg severity" : rjson[item]["avg severity"],
+                "weight" : rjson[item]["total accidents"] * rjson[item]["avg severity"]
             }, 
             ignore_index=True
         )
-    fig_daily = df_daily.figure()
-    fig_daily.savefig("stats.png")
+    df_daily.plot()
+    plt.savefig("stats.png")
     
     return send_file("stats.png", mimetype="image/png")
 
@@ -163,7 +164,7 @@ def vizstats():
 @needs_token
 def index():
     token = request.args.get("token")
-    return f"Hello, world!\nToken (testing purposes): {token}\nPlease save this temporary token for use.", 200
+    return jsonify(f"Hello, world!\nToken (testing purposes): {token}\nPlease save this temporary token for use."), 200
 
 # RUN
 if __name__ == "__main__":
