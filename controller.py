@@ -3,17 +3,17 @@
 # CONTROLLER - PROGRAM UTAMA
 
 # External imports
-from flask import Flask, request, redirect, url_for, jsonify, Response
+from flask import Flask, request, redirect, url_for, jsonify, Response, send_file
 from pandas.io.json import json_normalize
-from itsdangerous import URLSafeTimedSerializer
+from urllib.parse import quote, unquote
 from functools import wraps
 import pandas as pd
 import requests
+import jwt
 
 # CONTROLLLER
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "miio-miio1206"
-serializer = URLSafeTimedSerializer(app.secret_key)
+SECRET_KEY = "miio1206"
 
 # MODEL
 from tools.hashing import hash_three, verified, generate_salt
@@ -30,15 +30,11 @@ def needs_token(func):
         username = request.args.get('username')
         if not token or not username:
             # func is not processed
-            return jsonify("You don't have permission to access this page."), 401
+            return jsonify("Please login before accessing this page."), 401
         # Token detected
         try:
-            token_data = serializer.loads(token)
-            token_username = token_data['username']
-            if token_username != username:
-                 # func is not processed
-                return jsonify("Your account is not authorized to access this page."), 401
-        except :
+            token_test = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        except jwt.DecodeError:
             # func is not processed
             return jsonify("Your access permission is invalid."), 401
         # func is processed!
@@ -57,15 +53,15 @@ def login():
     script_get = "SELECT * FROM users WHERE username =%s"
     cursor1.execute(script_get, (username,))
     user_row = cursor1.fetchone()
-    hashpass = user_row[1]
-    salt = user_row[2]
     # Authenticate username and password, token
     if user_row is None:
         # Fail!
         return jsonify("Your account does not exist."), 403
+    hashpass = user_row[1]
+    salt = user_row[2]
     if verified(username, password, salt, hashpass):
         # Success! Grant token
-        token = serializer.dumps({'username': username})
+        token = jwt.encode({"username" : username}, SECRET_KEY, algorithm="HS256")
         return redirect(url_for('index')+"?username="+username+"&token="+token)
     # Fail!
     return jsonify("You're not authorized to use this feature."), 401
@@ -82,9 +78,11 @@ def signup():
     
     # Check is username already exists
     script = "SELECT username FROM users WHERE username=%s"
-    if cursor2.execute(script, (username,)) is not None:
+    cursor2.execute(script, (username,))
+    old_user = cursor2.fetchone()
+    if old_user is not None:
         return jsonify("This username already exists!"), 400
-    
+    mydb.commit()
     # Signup new user
     salt = str(generate_salt())
     hashed = hash_three(username, password, salt)
@@ -117,7 +115,8 @@ def getmap():
     # Covert to JSON
     d_joined = df_joined.to_json(orient="records")
 
-    return jsonify(d_joined), 200
+    # return jsonify(d_joined), 200
+    return "test", 200
 
 # RECEIVE | Visualize statistics on image
 @app.route("/vizstats", methods=["GET", "POST"])
@@ -155,19 +154,15 @@ def vizstats():
         )
     fig_daily = df_daily.figure()
     fig_daily.savefig("stats.png")
-
-    with open('stats.png', 'rb') as f:
-        # Read the image file data
-        data = f.read()
-    # Return the image file data as the response
-    return Response(data, mimetype='image/png')
-
+    
+    return send_file("stats.png", mimetype="image/png")
 
 # (3/3) ROOT
 @app.route("/")
 @needs_token
 def index():
-    return "Hello, world!", 200
+    token = request.args.get("token")
+    return f"Hello, world!\nToken (testing purposes): {token}\nPlease save this temporary token for use.", 200
 
 # RUN
 if __name__ == "__main__":

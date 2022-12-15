@@ -3,7 +3,7 @@ from pandas.io.json import json_normalize
 from mpl_toolkits.basemap import Basemap
 import json
 
-
+"""
 # endpoint
 
 # Get list data from JSON file
@@ -43,7 +43,6 @@ plt.savefig("map.png")
 # JSON LOAD TEST
 with open('test_data.json') as data:
     djson = json.load(data)
-"""
 Received JSON data is structured like the following:
 { 
     ...
@@ -63,7 +62,6 @@ Received JSON data is structured like the following:
     ...
 }
 
-"""
 # Check if attributes are correct
 if djson.get("accidents", None) is None:
     # Fail
@@ -84,3 +82,5 @@ print(dcounties)
 # df_joined = join_specific(dcounties, dcoor)
 
 # Covert to JSON
+
+"""
