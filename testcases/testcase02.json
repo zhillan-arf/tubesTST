@@ -1,0 +1,29 @@
+{
+    "statistic" : {
+        "2016-02-09" : {
+            "date" : "2016-02-09",
+            "total accidents" : 20,
+            "avg severity" : "2.71"
+        },
+        "2016-02-10" : {
+            "date" : "2016-02-10",
+            "total accidents" : 30,
+            "avg severity" : "3.71"
+        },
+        "2016-02-11" : {
+            "date" : "2016-02-11",
+            "total accidents" : 40,
+            "avg severity" : "2.71"
+        },
+        "2016-02-12" : {
+            "date" : "2016-02-12",
+            "total accidents" : 50,
+            "avg severity" : "1.71"
+        },
+        "2016-02-13" : {
+            "date" : "2016-02-13",
+            "total accidents" : 10,
+            "avg severity" : "2.71"
+        }
+    }
+}

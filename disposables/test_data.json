@@ -1,0 +1,20 @@
+{ 
+    "accidents" : 
+    [
+        {
+            "NAME" : "Academy City", 
+            "STUSAB" : "CA", 
+            "accidents_num" : 34
+        },
+        {
+            "NAME" : "Pasca Garden", 
+            "STUSAB" : "NV", 
+            "accidents_num" : 34
+        },
+        {
+            "NAME" : "Kindley", 
+            "STUSAB" : "OH", 
+            "accidents_num" : 0
+        }
+    ]
+}

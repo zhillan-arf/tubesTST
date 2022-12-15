@@ -1,0 +1,28 @@
+{ 
+    "code" : 200,
+    "status" : "success",
+    "accidents" : 
+        [
+            {
+                "NAME" : "St. Charles",
+                "STUSAB" : "LA", 
+                "accidents_num" : 69,
+                "INTPTLAT" : 29.9057222,
+                "INTPTLON" : -90.3578553
+            },
+            {
+                "NAME" : "San Patricio", 
+                "STUSAB" : "OH", 
+                "accidents_num" : 42,
+                "INTPTLAT" : 28.0117944,
+                "INTPTLON" : -97.5171566
+            },
+            {
+                "NAME" : "Sebastian", 
+                "STUSAB" : "AR", 
+                "accidents_num" : 33,
+                "INTPTLAT" : 35.1969808,
+                "INTPTLON" : -94.2749889
+            }
+        ]
+}

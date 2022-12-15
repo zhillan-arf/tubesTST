@@ -1,0 +1,114 @@
+{ 
+    "code" : 200,
+    "status" : "success",
+    "accidents" : 
+        [
+            ["Orange", "CA", 15],
+            ["Academy City", "CA", 1],
+            ["Kindley", "OH", 34],
+            ["Ganesha", "OH", 34]
+    ]
+}
+
+{ 
+    "code" : 200,
+    "status" : "success",
+    "accidents" : 
+        [
+            {
+                "NAME" : "Academy City", 
+                "STUDAB" : "OH", 
+                "accidents_num" : 34
+            },
+            {
+                "NAME" : "Pasca Garden", 
+                "STUDAB" : "NV", 
+                "accidents_num" : 34
+            }
+    ]
+}
+
+{ 
+    "accidents" : 
+        [
+            ["Orange", "CA", 15, -87.13, 114.96],
+            ["Academy City", "CA", 1, -87.13, 114.96],
+            ["Kindley", "OH", 34, -87.13, 114.96],
+            ["Ganesha", "OH", 34, -87.13, 114.96]
+    ]
+}
+
+
+?startdate=2016-08-15&enddate=2016-12-06&token....
+
+<statistik>
+
+{ 
+    "rows" : 
+        [
+            {
+                "name" = "Orange",
+                "state" = "CA",
+                "accidents_num" = 15
+                
+            },
+            {
+                "name" = "Academy City",
+                "state" = "CA",
+                "accidents_num" = 15
+            },
+            {
+                "name" = "Kindley",
+                "state" = "CA",
+                "accidents_num" = 15
+            },
+            {
+                "name" = "Ganesha",
+                "state" = "CA",
+                "accidents_num" = 15
+            }
+    ]
+}
+
+
+{ 
+    "accidents" : 
+    [
+        {
+            "NAME" : "Academy City", 
+            "STUSAB" : "CA", 
+            "accidents_num" : 34,
+            "INTPTLAT" : 69.420696969,
+            "INTPTLON" : 42.690696969
+        },
+        {
+            "NAME" : "Pasca Garden", 
+            "STUSAB" : "NV", 
+            "accidents_num" : 34,
+            "INTPTLAT" : 69.420,
+            "INTPTLON" : 42.690
+        },
+        {
+            "NAME" : "Kindley", 
+            "STUSAB" : "OH", 
+            "accidents_num" : 0,
+            "INTPTLAT" : 69.420,
+            "INTPTLON" : 42.690
+        }
+    ]
+}
+
+{
+    "a1" : {
+        "B" : "b1",
+        "C" : "c1"
+    },
+    "a2" : {
+        "B" : "b2",
+        "C" : "c2"
+    },
+    "a3" : {
+        "B" : "b3",
+        "C" : "c3"
+    }
+}
