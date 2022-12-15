@@ -10,6 +10,7 @@ from functools import wraps
 import pandas as pd
 import requests
 import jwt
+import json
 
 # CONTROLLLER
 app = Flask(__name__)
@@ -97,26 +98,26 @@ def signup():
 @app.route("/getmap", methods=["GET", "POST"])
 @needs_token
 def getmap():
-    # Get list data from JSON file
-    d_json = request.get_json()
-    
-    # Convert djson["accidents"] into a pd.DataFrame
-    df_accs = json_normalize(d_json, "accidents")
+    # Load JSON file
+    request.get_json()
+    dict_accs = json.loads(request.data, strict=False)
+    df_accs = pd.DataFrame(dict_accs["accidents"])
 
-    # Get counties coordinates data (dcoor)
+    # Load MySQL file
     cursor = mydb.cursor()
-    script = "SELECT NAME, STUSAB, INTPTLAT, INTPTLON FROM us_counties"
+    script = "SELECT NAME, STUSAB, INTPTLAT, INTPTLON FROM us_counties_borders"
     cursor.execute(script)
-    df_coor= pd.DataFrame(cursor.fetchall())
+    df_coor= pd.DataFrame(cursor.fetchall(), columns=["NAME", "STUSAB", "INTPTLAT", "INTPTLON"])
 
-    # Join the dataframes
+    df_coor["INTPTLAT"] = df_coor["INTPTLAT"].astype(float)
+    df_coor["INTPTLON"] = df_coor["INTPTLON"].astype(float)
+
     df_joined = pd.merge(df_accs, df_coor, on=["NAME", "STUSAB"])
-
-    # Covert to JSON
+    
+    # Convert back to JSON
     d_joined = df_joined.to_json(orient="records")
 
-    # return jsonify(d_joined), 200
-    return "test", 200
+    return jsonify({"accidents" : d_joined}), 200
 
 # RECEIVE | Visualize statistics on image
 @app.route("/vizstats", methods=["GET", "POST"])
